@@ -1,50 +1,32 @@
-import sqlite3
-import csv
+print("Type 'help' to see available commands.")
 
-conn = sqlite3.connect('student.db')
-cur = conn.cursor()
+car_started = False  # Track whether the car is started
 
-cur.execute("""
-CREATE TABLE IF NOT EXISTS student (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    age INTEGER,
-    grade TEXT
-)
+while True:
+    command = input("> ").lower()
+
+    if command == "start":
+        if car_started:
+            print("Car is already started.")
+        else:
+            car_started = True
+            print("Car is started.")
+    elif command == "stop":
+        if not car_started:
+            print("Car is already stopped.")
+        else:
+            car_started = False
+            print("Car is stopped.")
+
+    elif command == "help":
+        print("""
+Available commands:
+  start - to start the car
+  stop  - to stop the car
+  break - to quit the game
 """)
-print(" Table created successfully!")
-
-
-with open('students.csv', 'r') as file:
-    reader = csv.reader(file)
-    next(reader)  
-    for row in reader:
-        cur.execute("INSERT INTO student (name, age, grade) VALUES (?, ?, ?)", row)
-print(" Data inserted from CSV!")
-
-print("\n All student records:")
-cur.execute("SELECT * FROM student")
-for row in cur.fetchall():
-    print(row)
-
-
-cur.execute("UPDATE student SET grade = ? WHERE name = ?", ("B+", "Gita"))
-print("\n Updated Gita's grade to B+")
-
-
-cur.execute("DELETE FROM student WHERE name = ?", ("Sita",))
-print(" Deleted Sita from records")
-
-
-cur.execute("INSERT INTO student (name, age, grade) VALUES (?, ?, ?)", ("Kiran", 23, "A"))
-print(" Inserted new student: Kiran")
-
-
-print("\n Final student records after CRUD:")
-cur.execute("SELECT * FROM student")
-for row in cur.fetchall():
-    print(row)
-    
-conn.commit()
-conn.close()
-print("\n All operations completed!")
+    elif command == "break":
+        print("Quitting the game. Goodbye! thank you for playing")
+        break
+    else:
+        print("I don't understand that command.")
